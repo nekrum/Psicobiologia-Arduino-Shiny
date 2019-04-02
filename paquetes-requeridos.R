@@ -1,0 +1,6 @@
+install.packages('arduinor')
+install.packages('data.table')
+install.packages('tictoc')
+install.packages('ggplot2')
+install.packages('plotly')
+install.packages('flexdashboard')
