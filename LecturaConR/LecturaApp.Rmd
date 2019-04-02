@@ -1,0 +1,114 @@
+---
+title: "Practica 2 Psicobiología"
+output: flexdashboard::flex_dashboard
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+source("LecturaMedidorTemperaturaGalvanica.R")
+fases.experimentales <- c(
+  "Reposo inicial" = "reposo1",
+  "Sentadillas" =  "sentadilla",
+  "Stroop" = "stroop",
+  "Erotica" = "erotica",
+  "Emoción" = "emocion",
+  "Reposo Final" = "reposo2"
+)
+ archivos.validos <-  c(
+  "text/csv",
+  "text/comma-separated-values,text/plain",
+  ".csv"
+)
+senyal <- reactiveValues()
+```
+
+Inputs {.sidebar}
+-----------------------------------------------------------------------
+
+#### Captura
+
+```{r}
+
+textInput(inputId = "nombre", label = "Nombre del Sujeto", "")
+sliderInput(inputId = "tiempo.captura", label = "Tiempo de captura", min = 10, max = 300, value = 10, step = 10)
+sliderInput(inputId = "tiempo.espera", label = "Tiempo de espera", min = 0, max = 30, value = 0)
+radioButtons(inputId = "fase.captura", label = "Fase Experimental", choices = fases.experimentales)
+actionButton(inputId = "obtener.info", label = "Obtener registro")
+```
+
+----
+
+#### Guardar Datos
+
+```{r}
+downloadButton("guardar.info", "Guardar")
+downloadHandler(
+  filename = function() {
+    paste0(input$nombre,"_",input$fase.captura, "_", input$tiempo.captura, ".csv")
+  },
+  content = function(file) {
+    fwrite(senyal(), file, row.names = FALSE)
+  }
+)
+```
+
+----
+#### Leer Archivo
+
+```{r}
+fileInput(inputId = 'documento.revisar', label = "Seleccionar Archivo", accept = archivos.validos,buttonLabel= 'Abrir')
+```
+
+
+Column
+-----------------------------------------------------------------------
+
+### Registro de Temperatura y respuesta galvanica.
+
+```{r }
+
+observeEvent(input$obtener.info, {
+  validate(need(input$nombre, message = "Se requiere el nombre para guardar sujeto"))
+  showNotification("Inicio de extracción de datos")
+  senyal$datos.captura <- ExtraccionDatos(intervalo.captura = input$tiempo.captura, retraso = input$tiempo.espera)
+  showNotification("Finalizada la extracción de datos")
+})
+
+observeEvent(input$documento.revisar, {
+  showNotification("Leyendo archivo")
+  archivo <- input$documento.revisar
+  senyal$datos.lectura <- fread(archivo$datapath, header = T)[]
+  showNotification("Finalizada la lectura de archivo")
+})
+
+senyal.seleccionada <- observeEvent(input$ok, {
+  senyal$datos.captura <-senyal$datos.lectura
+  removeModal()
+})
+
+senyal.seleccionada <- reactive({
+  if(length(senyal$datos.captura) == 3 & length(senyal$datos.lectura) != 3) {
+    return(senyal$datos.captura)
+  } else if(length(senyal$datos.captura) == 3 & length(senyal$datos.lectura) == 3){
+    showModal(modalDialog(
+      title = "Cuidado",
+      "La carga de nuevps datos borrará el registro actual ¿Esta seguro?",
+      easyClose = FALSE,
+      footer = tagList(
+        actionButton("ok", "OK"),
+        modalButton("Cancel")
+      )
+    ))
+    return(senyal$datos.captura)
+  } else if(length(senyal$datos.captura) != 3 & length(senyal$datos.lectura) == 3) {
+    return(senyal$datos.lectura)
+  }
+  
+})
+
+renderPlotly({
+  GraficaResultados(senyal.seleccionada(), interactiva = T)
+})
+
+```
+
