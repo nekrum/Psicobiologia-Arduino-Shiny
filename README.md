@@ -37,6 +37,10 @@ Esquema del circuito utilizado:
 
 ![Cirucito](ArduionoGSR-Temp_bb.png)
 
+Foto del circuito ensamblado
+
+![Foto](fotoarduino.jpg)
+
 ### Dashboard de Lectura
 
 El dashboard se genero como un ``flexdashboard`` que es una simplificación de aplicaciones ``shiny`` a partir un archivo
