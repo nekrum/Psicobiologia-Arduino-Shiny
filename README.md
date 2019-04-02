@@ -33,6 +33,9 @@ El archivo **paquetes-requeridos.R** contiene los paquetes que requiere el **Das
 
 ### Circuito 
 
+Esquema del circuito utilizado:
+
+![Cirucito](ArduionoGSR-Temp_bb.png)
 
 ### Dashboard de Lectura
 
@@ -42,4 +45,4 @@ al disco.
 
 
 ----
-<sup>1</sup>: Puede servir con otros modelos de arduino aunque el voltaje puede ser un problema.
+<sup>1</sup> Puede servir con otros modelos de arduino aunque el voltaje puede ser un problema.
