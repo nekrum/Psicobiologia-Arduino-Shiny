@@ -10,9 +10,9 @@ Posteriormente intentaremos incluir frecuencia cardíaca al conjunto de pruebas.
 Para implementar estos censores es necesario:
 
 - Arduino uno <sup>1</sup>
-- Resistencia de 330 k$\omega$
-- Resistencia de 4.7 k$\omega$
-- Capacitor de 0.1$\mu$F
+- Resistencia de 330 kΩ
+- Resistencia de 4.7 kΩ
+- Capacitor de 0.1μF
 - Termometro DS18B20
 - Dos terminales conductoras (monedas de cobre o aluminio)
 
