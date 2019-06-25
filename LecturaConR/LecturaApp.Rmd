@@ -47,7 +47,7 @@ downloadHandler(
     paste0(input$nombre,"_",input$fase.captura, "_", input$tiempo.captura, ".csv")
   },
   content = function(file) {
-    fwrite(senyal(), file, row.names = FALSE)
+    fwrite(senyal.seleccionada(), file, row.names = FALSE)
   }
 )
 ```
